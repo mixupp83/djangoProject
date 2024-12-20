@@ -7,12 +7,11 @@ from django.contrib.auth.models import User
 class AdvertisementForm(forms.ModelForm):
     class Meta:
         model = Advertisement
-        # Поля, которые будут отображаться в форме
-        fields = ['title', 'content', 'author']
+        fields = ['title', 'content']  # Поля формы: заголовок и содержимое объявления
+        # Поле 'author' не включено, так как оно автоматически устанавливается текущим пользователем
 
 # Форма для регистрации пользователя
 class SignUpForm(UserCreationForm):
     class Meta:
         model = User
-        # Поля, которые будут отображаться в форме регистрации
-        fields = ('username', 'password1', 'password2',)
+        fields = ('username', 'password1', 'password2')  # Поля формы: имя пользователя и пароль
