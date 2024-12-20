@@ -1,7 +1,12 @@
-<!-- board/templates/board/advertisement_detail.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 <h1>{{ advertisement.title }}</h1>
 <p>{{ advertisement.content }}</p>
+
+<!-- Добавляем ссылку на редактирование, если пользователь является автором -->
+{% if user.is_authenticated and advertisement.author == user %}
+    <a href="{% url 'board:edit_advertisement' pk=advertisement.pk %}">Edit Advertisement</a>
+{% endif %}
+
 {% endblock %}
