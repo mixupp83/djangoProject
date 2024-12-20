@@ -1,25 +1,29 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Advertisement
-from .forms import AdvertisementForm, SignUpForm
+from django.shortcuts import render, redirect
+from board.models import Advertisement
+from board.forms import AdvertisementForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth import logout
 
-# Представление для выхода
+# Представление для выхода из системы
 def logout_view(request):
     logout(request)
-    return redirect('home')
+    return redirect('home')  # Перенаправление на домашнюю страницу
 
-# Представление для регистрации
+# Представление для регистрации пользователя
+from django.shortcuts import render, redirect
+from .forms import SignUpForm
+from django.contrib.auth import login, authenticate
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('/board')
+            return redirect('/board')  # Перенаправление на страницу объявлений
     else:
         form = SignUpForm()
-    return render(request, 'board/signup.html', {'form': form})
+    return render(request, 'signup.html', {'form': form})
 
 # Представление для домашней страницы
 def home(request):
@@ -35,34 +39,16 @@ def advertisement_detail(request, pk):
     advertisement = Advertisement.objects.get(pk=pk)
     return render(request, 'board/advertisement_detail.html', {'advertisement': advertisement})
 
-# Представление для добавления объявления
+# Представление для добавления нового объявления (только для авторизованных пользователей)
 @login_required
 def add_advertisement(request):
     if request.method == "POST":
         form = AdvertisementForm(request.POST)
         if form.is_valid():
             advertisement = form.save(commit=False)
-            advertisement.author = request.user
+            advertisement.author = request.user  # Устанавливаем текущего пользователя как автора
             advertisement.save()
-            return redirect('board:advertisement_list')
+            return redirect('board:advertisement_list')  # Перенаправление на список объявлений
     else:
         form = AdvertisementForm()
     return render(request, 'board/add_advertisement.html', {'form': form})
-
-
-@login_required
-def edit_advertisement(request, pk):
-    advertisement = get_object_or_404(Advertisement, pk=pk)
-
-    if advertisement.author != request.user:
-        return redirect('board:advertisement_list')
-
-    if request.method == "POST":
-        form = AdvertisementForm(request.POST, instance=advertisement)
-        if form.is_valid():
-            form.save()
-            return redirect('board:advertisement_detail', pk=advertisement.pk)
-    else:
-        form = AdvertisementForm(instance=advertisement)
-
-    return render(request, 'board/edit_advertisement.html', {'form': form, 'advertisement': advertisement})
