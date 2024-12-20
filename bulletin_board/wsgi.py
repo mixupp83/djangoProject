@@ -1,5 +1,5 @@
 """
-WSGI config for bulletin_board project.
+WSGI config for urban_project project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bulletin_board.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'urban_project.settings')
 
 application = get_wsgi_application()
