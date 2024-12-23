@@ -7,6 +7,7 @@
 <!-- Добавляем ссылку на редактирование, если пользователь является автором -->
 {% if user.is_authenticated and advertisement.author == user %}
     <a href="{% url 'board:edit_advertisement' pk=advertisement.pk %}">Edit Advertisement</a>
+    <a href="{% url 'board:delete_advertisement' pk=advertisement.pk %}">Delete Advertisement</a>
 {% endif %}
 
 {% endblock %}
