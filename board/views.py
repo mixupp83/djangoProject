@@ -41,11 +41,11 @@ def advertisement_detail(request, pk):
     return render(request, 'board/advertisement_detail.html', {'advertisement': advertisement})
 
 
-# Представление для добавления нового объявления (только для авторизованных пользователей)
+# Представление для добавления нового объявления
 @login_required
 def add_advertisement(request):
     if request.method == "POST":
-        form = AdvertisementForm(request.POST)
+        form = AdvertisementForm(request.POST, request.FILES)  # Добавлено request.FILES
         if form.is_valid():
             advertisement = form.save(commit=False)
             advertisement.author = request.user  # Устанавливаем текущего пользователя как автора
@@ -56,16 +56,15 @@ def add_advertisement(request):
     return render(request, 'board/add_advertisement.html', {'form': form})
 
 
-# Представление для редактирования объявления (только для авторизованных пользователей)
+# Представление для редактирования объявления
 @login_required
 def edit_advertisement(request, pk):
     advertisement = get_object_or_404(Advertisement, pk=pk)
-    # Проверка, что текущий пользователь является автором объявления
     if advertisement.author != request.user:
         return redirect('board:advertisement_detail', pk=advertisement.pk)
 
     if request.method == "POST":
-        form = AdvertisementForm(request.POST, instance=advertisement)
+        form = AdvertisementForm(request.POST, request.FILES, instance=advertisement)  # Добавлено request.FILES
         if form.is_valid():
             form.save()
             return redirect('board:advertisement_detail', pk=advertisement.pk)

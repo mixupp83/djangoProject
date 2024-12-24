@@ -8,6 +8,7 @@ class Advertisement(models.Model):
     content = models.TextField()  # Текст объявления
     author = models.ForeignKey(User, on_delete=models.CASCADE)  # Автор объявления
     created_at = models.DateTimeField(auto_now_add=True)  # Дата создания объявления
+    image = models.ImageField(upload_to='advertisements/', blank=True, null=True)  # Изображение объявления
 
     def __str__(self):
         return self.title  # Возвращает строковое представление объявления

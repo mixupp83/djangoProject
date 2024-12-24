@@ -4,6 +4,11 @@
 <h1>{{ advertisement.title }}</h1>
 <p>{{ advertisement.content }}</p>
 
+<!-- Отображение изображения, если оно есть -->
+{% if advertisement.image %}
+    <img src="{{ advertisement.image.url }}" alt="{{ advertisement.title }}" style="max-width: 300px;">
+{% endif %}
+
 <!-- Добавляем ссылку на редактирование, если пользователь является автором -->
 {% if user.is_authenticated and advertisement.author == user %}
     <a href="{% url 'board:edit_advertisement' pk=advertisement.pk %}">Edit Advertisement</a>
