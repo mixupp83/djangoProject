@@ -3,6 +3,7 @@
 {% block content %}
   <h2>Delete Advertisement</h2>
   <p>Are you sure you want to delete the advertisement "{{ advertisement.title }}"?</p>
+  <p>Author: {{ advertisement.author.username }}</p>  <!-- Отображение автора -->
   <form method="post">
     {% csrf_token %}
     <button type="submit">Yes, delete</button>

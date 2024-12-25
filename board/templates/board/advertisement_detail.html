@@ -9,6 +9,9 @@
     <img src="{{ advertisement.image.url }}" alt="{{ advertisement.title }}" style="max-width: 300px;">
 {% endif %}
 
+<!-- Отображение имени автора -->
+<p>Author: {{ advertisement.author.username }}</p>  <!-- Добавлено отображение автора -->
+
 <!-- Добавляем ссылку на редактирование, если пользователь является автором -->
 {% if user.is_authenticated and advertisement.author == user %}
     <a href="{% url 'board:edit_advertisement' pk=advertisement.pk %}">Edit Advertisement</a>
