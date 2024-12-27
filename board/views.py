@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from .models import Advertisement
 from .forms import AdvertisementForm, SignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login, authenticate
 
-
 # Представление для выхода из системы
 def logout_view(request):
     logout(request)
     return redirect('home')  # Перенаправление на домашнюю страницу
-
 
 # Представление для регистрации пользователя
 def signup(request):
@@ -23,23 +22,19 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
-
 # Представление для домашней страницы
 def home(request):
     return render(request, 'home.html')
-
 
 # Представление для списка объявлений
 def advertisement_list(request):
     advertisements = Advertisement.objects.all()
     return render(request, 'board/advertisement_list.html', {'advertisements': advertisements})
 
-
 # Представление для деталей объявления
 def advertisement_detail(request, pk):
     advertisement = get_object_or_404(Advertisement, pk=pk)
     return render(request, 'board/advertisement_detail.html', {'advertisement': advertisement})
-
 
 # Представление для добавления нового объявления
 @login_required
@@ -54,7 +49,6 @@ def add_advertisement(request):
     else:
         form = AdvertisementForm()
     return render(request, 'board/add_advertisement.html', {'form': form})
-
 
 # Представление для редактирования объявления
 @login_required
@@ -72,7 +66,6 @@ def edit_advertisement(request, pk):
         form = AdvertisementForm(instance=advertisement)
     return render(request, 'board/edit_advertisement.html', {'form': form, 'advertisement': advertisement})
 
-
 # Представление для удаления объявления
 @login_required
 def delete_advertisement(request, pk):
@@ -88,3 +81,19 @@ def delete_advertisement(request, pk):
         return redirect('board:advertisement_list')  # Перенаправление на список объявлений
 
     return render(request, 'board/delete_advertisement.html', {'advertisement': advertisement})
+
+# Представление для обработки лайка
+@login_required
+def like_advertisement(request, pk):
+    advertisement = get_object_or_404(Advertisement, pk=pk)
+    advertisement.likes += 1
+    advertisement.save()
+    return JsonResponse({'likes': advertisement.likes})
+
+# Представление для обработки дизлайка
+@login_required
+def dislike_advertisement(request, pk):
+    advertisement = get_object_or_404(Advertisement, pk=pk)
+    advertisement.dislikes += 1
+    advertisement.save()
+    return JsonResponse({'dislikes': advertisement.dislikes})

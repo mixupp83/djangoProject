@@ -10,7 +10,17 @@
 {% endif %}
 
 <!-- Отображение имени автора -->
-<p>Author: {{ advertisement.author.username }}</p>  <!-- Добавлено отображение автора -->
+<p>Author: {{ advertisement.author.username }}</p>
+
+<!-- Отображение количества лайков и дизлайков -->
+<p>Likes: <span id="likes">{{ advertisement.likes }}</span></p>
+<p>Dislikes: <span id="dislikes">{{ advertisement.dislikes }}</span></p>
+
+<!-- Кнопки для лайков и дизлайков -->
+{% if user.is_authenticated %}
+    <button onclick="likeAdvertisement({{ advertisement.pk }})">Like</button>
+    <button onclick="dislikeAdvertisement({{ advertisement.pk }})">Dislike</button>
+{% endif %}
 
 <!-- Добавляем ссылку на редактирование, если пользователь является автором -->
 {% if user.is_authenticated and advertisement.author == user %}
@@ -18,4 +28,31 @@
     <a href="{% url 'board:delete_advertisement' pk=advertisement.pk %}">Delete Advertisement</a>
 {% endif %}
 
+<script>
+function likeAdvertisement(pk) {
+    fetch(`/board/advertisement/${pk}/like/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json())
+      .then(data => {
+          document.getElementById('likes').innerText = data.likes;
+      });
+}
+
+function dislikeAdvertisement(pk) {
+    fetch(`/board/advertisement/${pk}/dislike/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json())
+      .then(data => {
+          document.getElementById('dislikes').innerText = data.dislikes;
+      });
+}
+</script>
 {% endblock %}
