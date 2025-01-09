@@ -5,7 +5,7 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <p>Author: {{ advertisement.author.username }}</p>  <!-- Отображение автора -->
+    <p>Author: {{ advertisement.author.username }}</p>
     <button type="submit">Save Changes</button>
   </form>
   <a href="{% url 'board:advertisement_detail' pk=advertisement.pk %}">Cancel</a>

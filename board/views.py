@@ -82,13 +82,21 @@ def delete_advertisement(request, pk):
 
     return render(request, 'board/delete_advertisement.html', {'advertisement': advertisement})
 
+
 # Представление для обработки лайка
 @login_required
 def like_advertisement(request, pk):
     advertisement = get_object_or_404(Advertisement, pk=pk)
     advertisement.likes += 1
     advertisement.save()
+
+    # Обновляем статистику пользователя
+    profile = advertisement.author.profile
+    profile.total_likes += 1
+    profile.save()
+
     return JsonResponse({'likes': advertisement.likes})
+
 
 # Представление для обработки дизлайка
 @login_required
@@ -96,4 +104,10 @@ def dislike_advertisement(request, pk):
     advertisement = get_object_or_404(Advertisement, pk=pk)
     advertisement.dislikes += 1
     advertisement.save()
+
+    # Обновляем статистику пользователя
+    profile = advertisement.author.profile
+    profile.total_dislikes += 1
+    profile.save()
+
     return JsonResponse({'dislikes': advertisement.dislikes})

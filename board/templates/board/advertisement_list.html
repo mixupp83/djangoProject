@@ -9,7 +9,10 @@
   {% for advertisement in advertisements %}
     <li>
       <a href="{% url 'board:advertisement_detail' pk=advertisement.pk %}">{{ advertisement.title }}</a>
-      <p>Author: {{ advertisement.author.username }}</p>  <!-- Добавлено отображение автора -->
+      <p>Author: {{ advertisement.author.username }}</p>
+      <p>Total Advertisements: {{ advertisement.author.profile.advertisements_count }}</p>
+      <p>Total Likes: {{ advertisement.author.profile.total_likes }}</p>
+      <p>Total Dislikes: {{ advertisement.author.profile.total_dislikes }}</p>
     </li>
   {% endfor %}
 </ul>
