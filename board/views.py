@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .models import Advertisement
 from .forms import AdvertisementForm, SignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login, authenticate
+
 
 # Представление для выхода из системы
 def logout_view(request):
@@ -28,8 +30,13 @@ def home(request):
 
 # Представление для списка объявлений
 def advertisement_list(request):
-    advertisements = Advertisement.objects.all()
-    return render(request, 'board/advertisement_list.html', {'advertisements': advertisements})
+    advertisements_list = Advertisement.objects.all().order_by('-created_at')  # Сортируем по дате создания (новые сначала)
+    paginator = Paginator(advertisements_list, 5)  # Ограничиваем количество объявлений на странице до 5
+
+    page_number = request.GET.get('page')  # Получаем номер страницы из запроса
+    page_obj = paginator.get_page(page_number)  # Получаем объект страницы
+
+    return render(request, 'board/advertisement_list.html', {'page_obj': page_obj})
 
 # Представление для деталей объявления
 def advertisement_detail(request, pk):

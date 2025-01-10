@@ -5,8 +5,9 @@
 {% if user.is_authenticated %}
     <a href="{% url 'board:add_advertisement' %}"><button>Add Advertisement</button></a>
 {% endif %}
+
 <ul>
-  {% for advertisement in advertisements %}
+  {% for advertisement in page_obj %}
     <li>
       <a href="{% url 'board:advertisement_detail' pk=advertisement.pk %}">{{ advertisement.title }}</a>
       <p>Author: {{ advertisement.author.username }}</p>
@@ -16,5 +17,24 @@
     </li>
   {% endfor %}
 </ul>
+
+<!-- Элементы управления пагинацией -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 
 {% endblock %}
